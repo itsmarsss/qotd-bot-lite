@@ -22,7 +22,7 @@ public class QOTDBotLite {
     static Config config;
     static JDA jda;
 
-    static final String version = "4.3.9";
+    static final String version = "1.1.0";
     private static String parent;
     private static final EnumSet<GatewayIntent> intent = EnumSet.of(
             GatewayIntent.GUILD_MESSAGES,
