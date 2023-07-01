@@ -44,10 +44,6 @@ public class ConsoleMirror extends JFrame {
         endButton.addActionListener(actionEvent -> QOTDBotLite.stop());
         buttonPanel.add(endButton);
 
-        Button siteButton = new Button("Control Panel", new Color(36, 128, 70), new Color(26, 99, 52), new Color(21, 86, 43));
-        siteButton.addActionListener(actionEvent -> QOTDBotLite.controlPanel());
-        buttonPanel.add(siteButton);
-
         Button editButton = new Button("config.yml", new Color(78, 80, 88), new Color(65, 68, 74), new Color(78, 80, 88));
         editButton.addActionListener(actionEvent -> {
             System.out.println();
