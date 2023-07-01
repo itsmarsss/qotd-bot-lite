@@ -223,7 +223,7 @@ public class CMD extends ListenerAdapter {
                         .addBlankField(true)
                         .addField("Manager commands",
                                 "`" + QOTDBotLite.config.getPrefix() + " qotdtest` - Send a sample QOTD" + "\n`" +
-                                        QOTDBotLite.config.getPrefix() + " post` - Post next QOTD" + "\n`" +
+                                        QOTDBotLite.config.getPrefix() + " post <question 245 char>-=-<footer 100 char>` - Post a QOTD" + "\n`" +
                                         QOTDBotLite.config.getPrefix() + " prefix <prefix, no space>` - Change bot prefix" + "\n`" +
                                         QOTDBotLite.config.getPrefix() + " qotdcolor <color in hex>` - Set QOTD embed color" + "\n`" +
                                         QOTDBotLite.config.getPrefix() + " info` - See bot info" + "\n`" +
