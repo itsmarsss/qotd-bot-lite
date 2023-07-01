@@ -46,6 +46,7 @@ Simply follow a tutorial to create a Discord bot and run the code. Pass in the b
 - Change embed colors
 - See bot info
 - See bot version
+
 #### Server admins
 - Change manager role
 
