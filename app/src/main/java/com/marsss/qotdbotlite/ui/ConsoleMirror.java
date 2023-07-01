@@ -1,6 +1,6 @@
-package com.marsss.qotdbot.ui;
+package com.marsss.qotdbotlite.ui;
 
-import com.marsss.qotdbot.QOTDBotLite;
+import com.marsss.qotdbotlite.QOTDBotLite;
 
 import javax.swing.*;
 import java.awt.*;
