@@ -1,4 +1,4 @@
-package com.marsss.qotdbot;
+package com.marsss.qotdbotlite;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -33,7 +33,7 @@ public class CMD extends ListenerAdapter {
         if (hasPerm(QOTDBotLite.config.getManagerRoleID()) || isAdmin()) {
             switch (rawSplit[1]) {
                 case "qotdtest" -> qotdTest();
-                case "postnext" -> postNext();
+                case "post" -> postNext(raw);
                 case "qotdchannel" -> setQOTDChannel(raw);
                 case "prefix" -> setPrefix(raw);
                 case "embedcolor" -> setColor(raw);
@@ -66,16 +66,32 @@ public class CMD extends ListenerAdapter {
     private void qotdTest() {
         // qotd testqotd
         EmbedBuilder QOTDEmbed = new EmbedBuilder();
-        QOTDEmbed.setAuthor("Added by: *author here*", null, QOTDBotLite.jda.getSelfUser().getAvatarUrl())
+        QOTDEmbed.setAuthor(QOTDBotLite.jda.getSelfUser().getName(), null, QOTDBotLite.jda.getSelfUser().getAvatarUrl())
                 .setTitle("**Question:** *question here*")
                 .setDescription("*footer here*")
                 .setColor(QOTDBotLite.config.getColor());
+
         e.getMessage().replyEmbeds(QOTDEmbed.build()).queue();
     }
 
-    private void postNext() {
-        // qotd post
-        QOTDBotLite.postQOTD();
+    private void postNext(String raw) {
+        // qotd post question-=-footer
+        try {
+            String[] param = raw.substring(QOTDBotLite.config.getPrefix().length() + 1 + 4).split("-=-");
+            for (int i = 0; i < param.length; i++) {
+                param[i] = param[i].trim();
+            }
+            if (param.length == 1 && !param[0].isBlank() && param[0].length() < 245) {
+                QOTDBotLite.postQOTD(param[0], "");
+            } else if (param.length == 2 && !param[0].isBlank() && param[0].length() < 245 && param[1].length() < 100) {
+                QOTDBotLite.postQOTD(param[0], param[1]);
+            } else {
+                e.getMessage().replyEmbeds(se("Invalid parameters.")).queue();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            this.e.getMessage().replyEmbeds(se("Invalid parameters.")).queue();
+        }
     }
 
     private void setQOTDChannel(String raw) {
@@ -137,7 +153,7 @@ public class CMD extends ListenerAdapter {
                 .setTitle("__Bot Info__")
                 .setDescription("[ *Version: " + QOTDBotLite.version + "* ]")
                 .addField("Prefix:", QOTDBotLite.config.getPrefix(), true)
-                .addField("QOTD Channel:", "<#" + QOTDBotLite.config.getPrefix() + ">", true)
+                .addField("QOTD Channel:", "<#" + QOTDBotLite.config.getChannelID() + ">", true)
                 .addBlankField(true)
                 .addField("Manager role ID:", QOTDBotLite.config.getManagerRoleID().equals("everyone") ? "everyone" : QOTDBotLite.config.getManagerRoleID().equals("admin") ? "admin" : "<@&" + QOTDBotLite.config.getManagerRoleID() + ">", true)
                 .setThumbnail(QOTDBotLite.jda.getSelfUser().getAvatarUrl())
@@ -154,7 +170,7 @@ public class CMD extends ListenerAdapter {
                         .setDescription(QOTDBotLite.versionCheck()
                                 .replaceAll("#", "")
                                 .replace("This program is up to date!", "__**This program is up to date!**__")
-                                .replace("[There is a newer version of QOTD Bot]", "__**[There is a newer version of QOTD Bot]**__")
+                                .replace("[There is a newer version of QOTD Bot Lite]", "__**[There is a newer version of QOTD Bot Lite]**__")
                                 .replace("Author's Note:", "**Author's Note:**")
                                 .replace("New version:", "**New version:**"))
                         .setColor(QOTDBotLite.config.getColor())
@@ -207,7 +223,7 @@ public class CMD extends ListenerAdapter {
                         .addBlankField(true)
                         .addField("Manager commands",
                                 "`" + QOTDBotLite.config.getPrefix() + " qotdtest` - Send a sample QOTD" + "\n`" +
-                                        QOTDBotLite.config.getPrefix() + " postnext` - Post next QOTD" + "\n`" +
+                                        QOTDBotLite.config.getPrefix() + " post` - Post next QOTD" + "\n`" +
                                         QOTDBotLite.config.getPrefix() + " prefix <prefix, no space>` - Change bot prefix" + "\n`" +
                                         QOTDBotLite.config.getPrefix() + " qotdcolor <color in hex>` - Set QOTD embed color" + "\n`" +
                                         QOTDBotLite.config.getPrefix() + " info` - See bot info" + "\n`" +
