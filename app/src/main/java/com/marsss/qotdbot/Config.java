@@ -193,7 +193,7 @@ public class Config {
 
     private void writeYML(boolean exception) {
         if ((dynamicConfig || exception) && getInitialized()) {
-            QOTDBot.writeConfigYML();
+            QOTDBotLite.writeConfigYML();
         }
     }
 }

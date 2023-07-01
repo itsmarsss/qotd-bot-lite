@@ -3,33 +3,25 @@ package com.marsss.qotdbot;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
-import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
-import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 
-import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.LinkedList;
 
 public class CMD extends ListenerAdapter {
     private MessageReceivedEvent e;
 
     public void onMessageReceived(MessageReceivedEvent event) {
-        if (event.getAuthor().isBot() || !event.getGuild().getId().equals(QOTDBot.config.getServerID()))
+        if (event.getAuthor().isBot() || !event.getGuild().getId().equals(QOTDBotLite.config.getServerID()))
             return;
 
         Message msg = event.getMessage();
         String raw = msg.getContentRaw();
         String[] rawSplit = raw.toLowerCase().split(" ");
         // [prefix - 0] [cmd - 1] [parameter - 2 to ???]
-        if (!rawSplit[0].equals(QOTDBot.config.getPrefix()) || rawSplit.length == 1) {
+        if (!rawSplit[0].equals(QOTDBotLite.config.getPrefix()) || rawSplit.length == 1) {
             return;
         }
         e = event;
@@ -38,7 +30,7 @@ public class CMD extends ListenerAdapter {
             help();
         }
 
-        if (hasPerm(QOTDBot.config.getManagerRoleID()) || isAdmin()) {
+        if (hasPerm(QOTDBotLite.config.getManagerRoleID()) || isAdmin()) {
             switch (rawSplit[1]) {
                 case "qotdtest" -> qotdTest();
                 case "postnext" -> postNext();
@@ -74,22 +66,22 @@ public class CMD extends ListenerAdapter {
     private void qotdTest() {
         // qotd testqotd
         EmbedBuilder QOTDEmbed = new EmbedBuilder();
-        QOTDEmbed.setAuthor("Added by: *author here*", null, QOTDBot.jda.getSelfUser().getAvatarUrl())
+        QOTDEmbed.setAuthor("Added by: *author here*", null, QOTDBotLite.jda.getSelfUser().getAvatarUrl())
                 .setTitle("**Question:** *question here*")
                 .setDescription("*footer here*")
-                .setColor(QOTDBot.config.getColor());
+                .setColor(QOTDBotLite.config.getColor());
         e.getMessage().replyEmbeds(QOTDEmbed.build()).queue();
     }
 
     private void postNext() {
         // qotd post
-        QOTDBot.postQOTD();
+        QOTDBotLite.postQOTD();
     }
 
     private void setQOTDChannel(String raw) {
         // qotd qotdchannel
         try {
-            String param = raw.substring(QOTDBot.config.getPrefix().length() + 1 + 11).trim();
+            String param = raw.substring(QOTDBotLite.config.getPrefix().length() + 1 + 11).trim();
             boolean exists = false;
             for (GuildChannel ch : e.getGuild().getChannels()) {
                 if (ch.getId().equals(param)) {
@@ -97,7 +89,7 @@ public class CMD extends ListenerAdapter {
                 }
             }
             if (exists) {
-                QOTDBot.config.setChannelID(param);
+                QOTDBotLite.config.setChannelID(param);
                 e.getMessage().replyEmbeds(se("QOTD channel has been changed to <#" + param + ">.")).queue();
             } else {
                 e.getMessage().replyEmbeds(se("Invalid channel id.")).queue();
@@ -112,9 +104,9 @@ public class CMD extends ListenerAdapter {
         // qotd prefix
         try {
             String param = raw.split(" ")[2].trim();
-            QOTDBot.config.setPrefix(param);
+            QOTDBotLite.config.setPrefix(param);
             e.getMessage().replyEmbeds(se("QOTD prefix has been changed to `" + param + "`.")).queue();
-            QOTDBot.jda.getPresence().setActivity(Activity.watching("for '" + QOTDBot.config.getPrefix() + " help'"));
+            QOTDBotLite.jda.getPresence().setActivity(Activity.watching("for '" + QOTDBotLite.config.getPrefix() + " help'"));
         } catch (Exception e) {
             e.printStackTrace();
             this.e.getMessage().replyEmbeds(se("Invalid prefix.")).queue();
@@ -124,11 +116,11 @@ public class CMD extends ListenerAdapter {
     private void setColor(String raw) {
         // qotd embedcolor
         try {
-            String param = raw.substring(QOTDBot.config.getPrefix().length() + 1 + 10).trim().replace("#", "");
-            QOTDBot.config.setQOTDColor(param);
+            String param = raw.substring(QOTDBotLite.config.getPrefix().length() + 1 + 10).trim().replace("#", "");
+            QOTDBotLite.config.setQOTDColor(param);
             this.e.getMessage().replyEmbeds(new EmbedBuilder()
-                            .setDescription("Set embed color to **#" + QOTDBot.config.getQOTDColor() + "**.")
-                            .setColor(QOTDBot.config.getColor())
+                            .setDescription("Set embed color to **#" + QOTDBotLite.config.getQOTDColor() + "**.")
+                            .setColor(QOTDBotLite.config.getColor())
                             .build())
                     .queue();
         } catch (Exception e) {
@@ -143,20 +135,20 @@ public class CMD extends ListenerAdapter {
 
         MessageEmbed infoEm = new EmbedBuilder()
                 .setTitle("__Bot Info__")
-                .setDescription("[ *Version: " + QOTDBot.version + "* ]")
-                .addField("Prefix:", QOTDBot.config.getPrefix(), true)
+                .setDescription("[ *Version: " + QOTDBotLite.version + "* ]")
+                .addField("Prefix:", QOTDBotLite.config.getPrefix(), true)
                 .addBlankField(true)
-                .addField("Interval:", QOTDBot.config.getInterval() + " minute(s)", true)
-                .addField("Perm role ID:", QOTDBot.config.getPermRoleID().equals("everyone") ? "everyone" : "<@&" + QOTDBot.config.getPermRoleID() + ">", true)
+                .addField("Interval:", QOTDBotLite.config.getInterval() + " minute(s)", true)
+                .addField("Perm role ID:", QOTDBotLite.config.getPermRoleID().equals("everyone") ? "everyone" : "<@&" + QOTDBotLite.config.getPermRoleID() + ">", true)
                 .addBlankField(true)
-                .addField("Manager role ID:", QOTDBot.config.getManagerRoleID().equals("everyone") ? "everyone" : "<@&" + QOTDBot.config.getManagerRoleID() + ">", true)
-                .addField("Manager review status:", QOTDBot.config.getManagerReview() + "", true)
+                .addField("Manager role ID:", QOTDBotLite.config.getManagerRoleID().equals("everyone") ? "everyone" : "<@&" + QOTDBotLite.config.getManagerRoleID() + ">", true)
+                .addField("Manager review status:", QOTDBotLite.config.getManagerReview() + "", true)
                 .addBlankField(true)
-                .addField("Manager review channel:", "<#" + QOTDBot.config.getReviewChannel() + ">", true)
-                .addField("Dynamic Config:", QOTDBot.config.getDynamicConfig() + "", false)
-                .setThumbnail(QOTDBot.jda.getSelfUser().getAvatarUrl())
+                .addField("Manager review channel:", "<#" + QOTDBotLite.config.getReviewChannel() + ">", true)
+                .addField("Dynamic Config:", QOTDBotLite.config.getDynamicConfig() + "", false)
+                .setThumbnail(QOTDBotLite.jda.getSelfUser().getAvatarUrl())
                 .setFooter(format.format(LocalDateTime.now()), e.getAuthor().getAvatarUrl())
-                .setColor(QOTDBot.config.getColor())
+                .setColor(QOTDBotLite.config.getColor())
                 .build();
         e.getMessage().replyEmbeds(infoEm).queue();
     }
@@ -164,14 +156,14 @@ public class CMD extends ListenerAdapter {
     private void checkVersion() {
         // qotd version
         e.getMessage().replyEmbeds(new EmbedBuilder()
-                        .setTitle(QOTDBot.version)
-                        .setDescription(QOTDBot.versionCheck()
+                        .setTitle(QOTDBotLite.version)
+                        .setDescription(QOTDBotLite.versionCheck()
                                 .replaceAll("#", "")
                                 .replace("This program is up to date!", "__**This program is up to date!**__")
                                 .replace("[There is a newer version of QOTD Bot]", "__**[There is a newer version of QOTD Bot]**__")
                                 .replace("Author's Note:", "**Author's Note:**")
                                 .replace("New version:", "**New version:**"))
-                        .setColor(QOTDBot.config.getColor())
+                        .setColor(QOTDBotLite.config.getColor())
                         .build())
                 .queue();
     }
@@ -179,10 +171,10 @@ public class CMD extends ListenerAdapter {
     private void qotdManager(String raw) {
         // qotd managerrole
         try {
-            String param = raw.substring(QOTDBot.config.getPrefix().length() + 1 + 11).trim();
+            String param = raw.substring(QOTDBotLite.config.getPrefix().length() + 1 + 11).trim();
             if (param.equalsIgnoreCase("everyone")) {
                 e.getMessage().replyEmbeds(se("QOTD manager role has been changed; `everyone` can approve or deny questions")).queue();
-                QOTDBot.config.setManagerRoleID("everyone");
+                QOTDBotLite.config.setManagerRoleID("everyone");
                 return;
             }
             boolean exists = false;
@@ -193,7 +185,7 @@ public class CMD extends ListenerAdapter {
                 }
             }
             if (exists) {
-                QOTDBot.config.setManagerRoleID(param);
+                QOTDBotLite.config.setManagerRoleID(param);
                 e.getMessage().replyEmbeds(se("QOTD manager role has been changed to <@&" + param + ">.")).queue();
             } else {
                 e.getMessage().replyEmbeds(se("Invalid role id.")).queue();
@@ -207,7 +199,7 @@ public class CMD extends ListenerAdapter {
     static MessageEmbed se(String desc) {
         return new EmbedBuilder()
                 .setDescription(desc)
-                .setColor(QOTDBot.config.getColor())
+                .setColor(QOTDBotLite.config.getColor())
                 .build();
     }
 
@@ -217,20 +209,20 @@ public class CMD extends ListenerAdapter {
                 new EmbedBuilder()
                         .setTitle("__**Commands**__")
                         .addField("Main",
-                                "`" + QOTDBot.config.getPrefix() + " help` - This message", false)
+                                "`" + QOTDBotLite.config.getPrefix() + " help` - This message", false)
                         .addBlankField(true)
                         .addField("Manager commands",
-                                "`" + QOTDBot.config.getPrefix() + " qotdtest` - Send a sample QOTD" + "\n`" +
-                                        QOTDBot.config.getPrefix() + " postnext` - Post next QOTD" + "\n`" +
-                                        QOTDBot.config.getPrefix() + " prefix <prefix, no space>` - Change bot prefix" + "\n`" +
-                                        QOTDBot.config.getPrefix() + " qotdcolor <color in hex>` - Set QOTD embed color" + "\n`" +
-                                        QOTDBot.config.getPrefix() + " info` - See bot info" + "\n`" +
-                                        QOTDBot.config.getPrefix() + " version` - See bot version", false)
+                                "`" + QOTDBotLite.config.getPrefix() + " qotdtest` - Send a sample QOTD" + "\n`" +
+                                        QOTDBotLite.config.getPrefix() + " postnext` - Post next QOTD" + "\n`" +
+                                        QOTDBotLite.config.getPrefix() + " prefix <prefix, no space>` - Change bot prefix" + "\n`" +
+                                        QOTDBotLite.config.getPrefix() + " qotdcolor <color in hex>` - Set QOTD embed color" + "\n`" +
+                                        QOTDBotLite.config.getPrefix() + " info` - See bot info" + "\n`" +
+                                        QOTDBotLite.config.getPrefix() + " version` - See bot version", false)
                         .addBlankField(true)
                         .addField("Admin commands",
-                                "`" + QOTDBot.config.getPrefix() + " managerrole <role id/'everyone'>` - Set QOTD manager role", false)
-                        .setThumbnail(QOTDBot.jda.getSelfUser().getAvatarUrl())
-                        .setColor(QOTDBot.config.getColor())
+                                "`" + QOTDBotLite.config.getPrefix() + " managerrole <role id/'everyone'>` - Set QOTD manager role", false)
+                        .setThumbnail(QOTDBotLite.jda.getSelfUser().getAvatarUrl())
+                        .setColor(QOTDBotLite.config.getColor())
                         .build()).queue();
     }
 }
