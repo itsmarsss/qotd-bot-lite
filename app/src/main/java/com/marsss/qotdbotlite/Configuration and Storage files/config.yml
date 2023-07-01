@@ -12,7 +12,7 @@ channelID: 1234567890
 prefix: qotd
 
 # Not mandatory fields:
-# Set a manager role, these members can manage QOTDs (write everyone if everyone)
+# Set a manager role, these members can manage QOTDs (write everyone if everyone, admin if admin)
 managerRoleID: 1234567890
 
 # QOTD Embed color in hex (Do not include "#")
