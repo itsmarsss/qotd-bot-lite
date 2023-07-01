@@ -8,23 +8,11 @@ public class Config {
     private String channelID;
     private String prefix;
 
-    private int interval;
-    private int hour;
-    private int minute;
-
-    private String permRoleID;
     private String managerRoleID;
-
-    private boolean dynamicConfig = true;
-
-    private boolean managerReview = false;
-    private String reviewChannel;
 
     private String QOTDColor = "E62127";
 
     private Color color = Color.decode("#E62127");
-
-    private boolean trivia = true;
 
     private boolean initialized;
 
@@ -53,7 +41,7 @@ public class Config {
 
     public void setChannelID(String channelID) {
         this.channelID = channelID;
-        writeYML(false);
+        writeYML();
     }
 
     public String getPrefix() {
@@ -62,40 +50,7 @@ public class Config {
 
     public void setPrefix(String prefix) {
         this.prefix = prefix;
-        writeYML(false);
-    }
-
-    public int getInterval() {
-        return interval;
-    }
-
-    public void setInterval(int interval) {
-        this.interval = interval;
-    }
-
-    public int getHour() {
-        return hour;
-    }
-
-    public void setHour(int hour) {
-        this.hour = hour;
-    }
-
-    public int getMinute() {
-        return minute;
-    }
-
-    public void setMinute(int minute) {
-        this.minute = minute;
-    }
-
-    public String getPermRoleID() {
-        return permRoleID;
-    }
-
-    public void setPermRoleID(String permRoleID) {
-        this.permRoleID = permRoleID;
-        writeYML(false);
+        writeYML();
     }
 
     public String getManagerRoleID() {
@@ -104,34 +59,7 @@ public class Config {
 
     public void setManagerRoleID(String managerRoleID) {
         this.managerRoleID = managerRoleID;
-        writeYML(false);
-    }
-
-    public boolean getDynamicConfig() {
-        return dynamicConfig;
-    }
-
-    public void setDynamicConfig(boolean dynamicConfig) {
-        this.dynamicConfig = dynamicConfig;
-        writeYML(true);
-    }
-
-    public boolean getManagerReview() {
-        return managerReview;
-    }
-
-    public void setManagerReview(boolean managerReview) {
-        this.managerReview = managerReview;
-        writeYML(false);
-    }
-
-    public String getReviewChannel() {
-        return reviewChannel;
-    }
-
-    public void setReviewChannel(String reviewChannel) {
-        this.reviewChannel = reviewChannel;
-        writeYML(false);
+        writeYML();
     }
 
     public String getQOTDColor() {
@@ -141,20 +69,11 @@ public class Config {
     public void setQOTDColor(String QOTDColor) {
         this.QOTDColor = QOTDColor.replace("#", "");
         color = Color.decode("#" + this.QOTDColor);
-        writeYML(false);
+        writeYML();
     }
-
 
     public Color getColor() {
         return color;
-    }
-
-    public boolean getTrivia() {
-        return trivia;
-    }
-
-    public void setTrivia(boolean trivia) {
-        this.trivia = trivia;
     }
 
     public boolean getInitialized() {
@@ -179,20 +98,11 @@ public class Config {
         if (prefix.isBlank())
             return false;
 
-        if (interval < 1 || interval > 1440)
-            return false;
-
-        if (hour < 0 || hour > 24 || minute < 0 || minute > 59)
-            return false;
-
-        if (permRoleID.isBlank())
-            return false;
-
         return !managerRoleID.isBlank();
     }
 
-    private void writeYML(boolean exception) {
-        if ((dynamicConfig || exception) && getInitialized()) {
+    private void writeYML() {
+        if (getInitialized()) {
             QOTDBotLite.writeConfigYML();
         }
     }
