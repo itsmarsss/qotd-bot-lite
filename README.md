@@ -1,7 +1,7 @@
 <h1 align="center">
 <img src="/assets/image.png" alt="Icon" width="100" height="100">
 <br>
-QOTD-Bot
+QOTD-Bot-Lite
 <br>
 </h1>
 Simple Question Of The Day (QOTD) Discord Bot you can add to your server. 

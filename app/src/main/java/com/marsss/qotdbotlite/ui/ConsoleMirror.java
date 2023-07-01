@@ -10,7 +10,7 @@ import java.net.URL;
 public class ConsoleMirror extends JFrame {
 
     public ConsoleMirror() {
-        super("QOTD Bot Console v" + QOTDBotLite.getVersion());
+        super("QOTD Bot Lite Console v" + QOTDBotLite.getVersion());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JTextArea textArea = new JTextArea();
@@ -54,7 +54,7 @@ public class ConsoleMirror extends JFrame {
                 System.out.println("You will need to restart the program for new changes to take place.");
                 JOptionPane.showMessageDialog(null,
                         "You will need to restart the program for new changes to take place.",
-                        "QOTD BOT Warning",
+                        "QOTD BOT LITE Warning",
                         JOptionPane.WARNING_MESSAGE);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -62,7 +62,7 @@ public class ConsoleMirror extends JFrame {
                 System.out.println("\tUnable to open: " + QOTDBotLite.getParent() + "/config.yml");
                 JOptionPane.showMessageDialog(null,
                         "Notepad.exe not found: Unable to open: " + QOTDBotLite.getParent() + "/config.yml",
-                        "QOTD BOT Error",
+                        "QOTD BOT LITE Error",
                         JOptionPane.ERROR_MESSAGE);
             }
         });
@@ -72,7 +72,7 @@ public class ConsoleMirror extends JFrame {
 
         getContentPane().add(buttonPanel, BorderLayout.SOUTH);
 
-        ImageIcon icon = loadIconFromInternet("https://raw.githubusercontent.com/itsmarsss/QOTD-Bot/main/assets/image.png");
+        ImageIcon icon = loadIconFromInternet("https://raw.githubusercontent.com/itsmarsss/QOTD-Bot-Lite/main/assets/image.png");
         if (icon != null) {
             setIconImage(icon.getImage());
         }
