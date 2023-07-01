@@ -1,11 +1,13 @@
 package com.marsss.qotdbotlite;
 
 import com.marsss.qotdbotlite.ui.ConsoleMirror;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
@@ -13,6 +15,7 @@ import org.yaml.snakeyaml.constructor.Constructor;
 import javax.swing.*;
 import java.io.*;
 import java.net.*;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class QOTDBotLite {
@@ -319,5 +322,27 @@ public class QOTDBotLite {
 
     public static JDA getJDA() {
         return jda;
+    }
+
+    public static void postQOTD(String question, String footer) {
+        EmbedBuilder QOTDEmbed = new EmbedBuilder();
+        QOTDEmbed.setAuthor(QOTDBotLite.jda.getSelfUser().getName(), null, QOTDBotLite.jda.getSelfUser().getAvatarUrl())
+                .setTitle("**Question:** " + question)
+                .setDescription(footer)
+                .setColor(QOTDBotLite.config.getColor());
+
+        boolean exists = false;
+        for (GuildChannel ch : jda.getGuildById(config.getServerID()).getChannels()) {
+            if (ch.getId().equals(config.getChannelID())) {
+                exists = true;
+                break;
+            }
+        }
+        if (!exists)
+            return;
+
+        jda.getTextChannelById(config.getChannelID()).sendMessageEmbeds(QOTDEmbed.build()).queue(msg -> {
+            msg.createThreadChannel("QOTD of " + new SimpleDateFormat("MM-dd-yyyy").format(new Date())).queue();
+        });
     }
 }
